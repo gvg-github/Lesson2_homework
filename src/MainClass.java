@@ -11,6 +11,7 @@ public class MainClass {
 
     private static Connection connection;
     private static Statement stmt;
+    private static PreparedStatement ps;
 
     public static void main(String[] args) throws SQLException {
 
@@ -25,6 +26,7 @@ public class MainClass {
         String[] inComm;
         boolean doNext;
 
+        connect();
         initBase();
 
         System.out.println("Type command:");
@@ -97,7 +99,7 @@ public class MainClass {
     }
 
     public static void initBase() throws SQLException {
-        connect();
+
         stmt = connection.createStatement();
         stmt.execute("CREATE TABLE IF NOT EXISTS ProdTable (\n" +
                 "   id INTEGER PRIMARY KEY AUTOINCREMENT, \n" +
@@ -106,18 +108,23 @@ public class MainClass {
                 "   cost INTEGER);");
 
         stmt.execute("DELETE FROM ProdTable");
-        int id = 1;
-        int prodid = 0;
-        String title = "";
-        int cost = 0;
+        ps = connection.prepareStatement("INSERT INTO ProdTable (id, prodid, title, cost) VALUES (?,?,?,?)");
 
-        for (int i = 0; i < 10000; i++) {
+        int id = 0;
+        int prodid = 0;
+        int cost = 100;
+
+        for (int i = 0; i < 1000; i++) {
             id += 1;
             prodid += 1;
-            cost = 100 * i;
-            title = "product" + i;
-            stmt.execute("INSERT INTO ProdTable (id, prodid, title, cost) VALUES (" + id + ", " + prodid + ", '" + title + "', " + cost + ")");
+            cost += 100 * i;
+            ps.setInt(1, id);
+            ps.setInt(2, prodid);
+            ps.setString(3, "product" + i);
+            ps.setInt(4, cost);
+            ps.addBatch();
         }
+        ps.executeBatch();
 
 //        ResultSet res = stmt.executeQuery("SELECT * FROM ProdTable");
 //        while (res.next()) {
