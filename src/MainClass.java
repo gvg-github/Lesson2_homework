@@ -114,7 +114,7 @@ public class MainClass {
         int prodid = 0;
         int cost = 100;
 
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 10000; i++) {
             id += 1;
             prodid += 1;
             cost += 100 * i;
