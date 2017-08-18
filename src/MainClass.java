@@ -102,8 +102,8 @@ public class MainClass {
 
         stmt = connection.createStatement();
         stmt.execute("CREATE TABLE IF NOT EXISTS ProdTable (\n" +
-                "   id INTEGER PRIMARY KEY AUTOINCREMENT, \n" +
-                "   prodid INTEGER NOT NULL,\n" +
+                "   id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL, \n" +
+                "   prodid INTEGER UNIQUE NOT NULL,\n" +
                 "   title TEXT,\n" +
                 "   cost INTEGER);");
 
@@ -114,13 +114,13 @@ public class MainClass {
         int prodid = 0;
         int cost = 100;
 
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < 1000; i++) {
             id += 1;
             prodid += 1;
             cost += 100 * i;
             ps.setInt(1, id);
             ps.setInt(2, prodid);
-            ps.setString(3, "product" + i);
+            ps.setString(3, "product" + (i + 1));
             ps.setInt(4, cost);
             ps.addBatch();
         }
